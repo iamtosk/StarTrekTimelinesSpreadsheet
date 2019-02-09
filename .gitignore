@@ -1,0 +1,14 @@
+.vscode/launch.json
+node_modules/
+dist/
+builds/
+/.vs
+/notes.txt
+mobile/build.json
+native/bin/
+STTApi/
+.vagrant/
+Vagrantfile
+
+# Ignore All IDEA Folders
+.idea

@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "no-console": false // ok for now, but should probably find a better logger after a non-alpha release
+  }
+}

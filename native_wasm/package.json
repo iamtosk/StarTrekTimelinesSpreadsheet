@@ -1,0 +1,8 @@
+{
+  "name": "stt-native-wasm",
+  "version": "0.0.1",
+  "main": "index.js",
+  "scripts": {
+    "build": "build.bat"
+  }
+}

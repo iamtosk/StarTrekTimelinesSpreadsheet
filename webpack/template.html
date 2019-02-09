@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title><%= htmlWebpackPlugin.options.title %></title>
+  <link id="themeCSS" rel="stylesheet" href="" />
+
+  <script>
+    const g_defaultTheme = './css/semantic.css';
+    const g_darkTheme = './css/semantic.slate.css';
+
+    function swapThemeCss() {
+      let sheet = document.querySelector('#themeCSS');
+      if (!sheet) {
+        return;
+      }
+
+      if (sheet.getAttribute('href') === g_defaultTheme) {
+        sheet.setAttribute('href', g_darkTheme);
+      } else {
+        sheet.setAttribute('href', g_defaultTheme);
+      }
+    }
+
+    function setThemeCss(dark) {
+      let sheet = document.querySelector('#themeCSS');
+      if (!sheet) {
+        return;
+      }
+
+      sheet.setAttribute('href', dark ? g_darkTheme : g_defaultTheme);
+    }
+
+    swapThemeCss();
+  </script>
+</head>
+
+<body>
+  <div id="app"></div>
+</body>
+
+</html>
