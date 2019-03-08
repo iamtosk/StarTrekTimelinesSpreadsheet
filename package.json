@@ -49,8 +49,7 @@
     "postpackagedev": "electron-packager ./ --out=./builds --prune --icon=src/assets/icons/ATFleet.ico",
     "installer": "node createinstaller.js",
     "install:all": "run-s -l install:api rebuild",
-    "install:api": "cd STTApi && npm install",
-    "postinstall": "electron-builder install-app-deps"
+    "install:api": "cd STTApi && npm install"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
