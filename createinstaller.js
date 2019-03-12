@@ -14,6 +14,9 @@ if (os.platform() === 'win32') {
 			win: {
 				target: ['nsis', '7z'],
 				icon: path.join(rootPath, 'src/assets/icons/ATFleet.ico')
+			},
+			directories: {
+				output: 'installer'
 			}
 		}
 	}).catch((error) => {
@@ -28,6 +31,9 @@ else {
 			mac: {
 				identity: null,
 				icon: path.join(rootPath, 'src/assets/icons/ATFleet.icns')
+			},
+			directories: {
+				output: 'installer'
 			}
 		}
 	}).catch((error) => {

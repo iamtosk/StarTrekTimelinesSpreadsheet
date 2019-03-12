@@ -4,6 +4,7 @@ dist/
 builds/
 /.vs
 /notes.txt
+installer/
 mobile/build.json
 native/bin/
 STTApi/
