@@ -30,7 +30,8 @@ export class CrewList extends React.Component {
 
 		this.state = {
 			items: props.data,
-			sorted: [{ id: props.sortColumn, desc: false }]
+			sorted: [{ id: props.sortColumn, desc: false }],
+			showShip: false
 		};
 
 		this._showActiveDialog = this._showActiveDialog.bind(this);
@@ -163,6 +164,7 @@ export class CrewList extends React.Component {
 
 		return (
 			<div className={this.props.embedded ? 'embedded-crew-grid' : 'data-grid'} data-is-scrollable='true'>
+				<DefaultButton text={this.state.showShip ? 'Show Stats' : 'Show Ship Abilities'} onClick={() => this.setState({ showShip: !this.state.showShip})}></DefaultButton>
 				<ReactTable
 					data={items}
 					columns={columns}
@@ -175,7 +177,7 @@ export class CrewList extends React.Component {
 					className="-striped -highlight"
 					NextComponent={defaultButton}
 					PreviousComponent={defaultButton}
-					style={(!this.props.embedded && (items.length > 50)) ? { height: 'calc(100vh - 88px)' } : {}}
+					style={(!this.props.embedded && (items.length > 50)) ? { height: 'calc(100vh - 118px)' } : {}}
 					pivotBy={pivotBy}
 					getTrProps={(s, r) => {
 						return {
@@ -195,6 +197,16 @@ export class CrewList extends React.Component {
 
 	_getColumns(duplicatelist, showBuyBack, compactMode, pivotRarity) {
 		let _columns = [];
+
+		const numberCell = (otherProps) => ({
+			minWidth: 70,
+			maxWidth: 100,
+			resizable: true,
+			Cell: (cell) => cell.original ? <SkillCell skill={cell.original[otherProps.id]} compactMode={compactMode} /> : <span />,
+			aggregate: vals => vals.reduce((a, b) => a + b, 0) / vals.length,
+			Aggregated: row => <span>{Math.floor(row.value)} (avg)</span>,
+			...otherProps
+		});
 
 		if (pivotRarity) {
 			_columns.push({
@@ -383,82 +395,131 @@ export class CrewList extends React.Component {
 			});
 		}
 
-		_columns.push({
-			id: 'command_skill',
-			Header: 'Command',
-			minWidth: 70,
-			maxWidth: 100,
-			resizable: true,
-			accessor: 'command_skill_core',
-			Cell: (cell) => cell.original ? <SkillCell skill={cell.original.command_skill} compactMode={compactMode} /> : <span />,
-			aggregate: vals => vals.reduce((a, b) => a + b, 0) / vals.length,
-			Aggregated: row => <span>{Math.floor(row.value)} (avg)</span>
-		},
-			{
-				id: 'diplomacy_skill',
-				Header: 'Diplomacy',
-				minWidth: 70,
-				maxWidth: 100,
-				resizable: true,
-				accessor: 'diplomacy_skill_core',
-				Cell: (cell) => cell.original ? <SkillCell skill={cell.original.diplomacy_skill} compactMode={compactMode} /> : <span />,
-				aggregate: vals => vals.reduce((a, b) => a + b, 0) / vals.length,
-				Aggregated: row => <span>{Math.floor(row.value)} (avg)</span>
-			},
-			{
-				id: 'engineering_skill',
-				Header: 'Engineering',
-				minWidth: 75,
-				maxWidth: 100,
-				resizable: true,
-				accessor: 'engineering_skill_core',
-				Cell: (cell) => cell.original ? <SkillCell skill={cell.original.engineering_skill} compactMode={compactMode} /> : <span />,
-				aggregate: vals => vals.reduce((a, b) => a + b, 0) / vals.length,
-				Aggregated: row => <span>{Math.floor(row.value)} (avg)</span>
-			},
-			{
-				id: 'medicine_skill',
-				Header: 'Medicine',
-				minWidth: 70,
-				maxWidth: 100,
-				resizable: true,
-				accessor: 'medicine_skill_core',
-				Cell: (cell) => cell.original ? <SkillCell skill={cell.original.medicine_skill} compactMode={compactMode} /> : <span />,
-				aggregate: vals => vals.reduce((a, b) => a + b, 0) / vals.length,
-				Aggregated: row => <span>{Math.floor(row.value)} (avg)</span>
-			},
-			{
-				id: 'science_skill',
-				Header: 'Science',
-				minWidth: 70,
-				maxWidth: 100,
-				resizable: true,
-				accessor: 'science_skill_core',
-				Cell: (cell) => cell.original ? <SkillCell skill={cell.original.science_skill} compactMode={compactMode} /> : <span />,
-				aggregate: vals => vals.reduce((a, b) => a + b, 0) / vals.length,
-				Aggregated: row => <span>{Math.floor(row.value)} (avg)</span>
-			},
-			{
-				id: 'security_skill',
-				Header: 'Security',
-				minWidth: 70,
-				maxWidth: 100,
-				resizable: true,
-				accessor: 'security_skill_core',
-				Cell: (cell) => cell.original ? <SkillCell skill={cell.original.security_skill} compactMode={compactMode} /> : <span />,
-				aggregate: vals => vals.reduce((a, b) => a + b, 0) / vals.length,
-				Aggregated: row => <span>{Math.floor(row.value)} (avg)</span>
-			},
-			{
-				key: 'traits',
-				Header: 'Traits',
-				minWidth: 140,
-				isResizable: true,
-				accessor: 'traits',
-				Cell: (cell) => cell.original ? <div style={compactMode ? { overflow: 'hidden', textOverflow: 'ellipsis', height: '22px' } : { whiteSpace: 'normal', height: '50px' }}>{cell.original.traits.replace(/,/g, ', ')}</div> : <span />,
-				aggregate: vals => 0,
-				Aggregated: row => <span />
-			});
+		if (!this.state.showShip) {
+			_columns.push(
+				numberCell({
+					id: 'command_skill',
+					Header: 'Command',
+					accessor: 'command_skill_core'
+				}),
+				numberCell({
+					id: 'diplomacy_skill',
+					Header: 'Diplomacy',
+					accessor: 'diplomacy_skill_core'
+				}),
+				numberCell({
+					id: 'engineering_skill',
+					Header: 'Engineering',
+					accessor: 'engineering_skill_core'
+				}),
+				numberCell({
+					id: 'medicine_skill',
+					Header: 'Medicine',
+					accessor: 'medicine_skill_core'
+				}),
+				numberCell({
+					id: 'science_skill',
+					Header: 'Science',
+					accessor: 'science_skill_core'
+				}),
+				numberCell({
+					id: 'security_skill',
+					Header: 'Security',
+					accessor: 'security_skill_core'
+				}),
+				{
+					key: 'traits',
+					Header: 'Traits',
+					minWidth: 140,
+					isResizable: true,
+					accessor: 'traits',
+					Cell: (cell) => cell.original ? <div style={compactMode ? { overflow: 'hidden', textOverflow: 'ellipsis', height: '22px' } : { whiteSpace: 'normal', height: '50px' }}>{cell.original.traits.replace(/,/g, ', ')}</div> : <span />,
+					aggregate: vals => 0,
+					Aggregated: row => <span />
+				}
+			);
+		}
+		if (this.state.showShip) {
+			_columns.push(
+				numberCell({
+					id: 'accuracy',
+					Header: 'Accuracy',
+					accessor: 'ship_battle.accuracy',
+					Cell: (cell) => cell.original ? <div>{cell.original.ship_battle.accuracy}</div> : <span />
+				}),
+				numberCell({
+					id: 'crit_bonus',
+					Header: 'Crit Bonus',
+					accessor: 'ship_battle.crit_bonus',
+					Cell: (cell) => cell.original ? <div>{cell.original.ship_battle.crit_bonus}</div> : <span />
+				}),
+				numberCell({
+					id: 'crit_chance',
+					Header: 'Crit Rating',
+					accessor: 'ship_battle.crit_chance',
+					Cell: (cell) => cell.original ? <div>{cell.original.ship_battle.crit_chance}</div> : <span />
+				}),
+				numberCell({
+					id: 'evasion',
+					Header: 'Evasion',
+					accessor: 'ship_battle.evasion',
+					Cell: (cell) => cell.original ? <div>{cell.original.ship_battle.evasion}</div> : <span />
+				}),
+				numberCell({
+					id: 'bonus_type',
+					Header: 'Bonus Type',
+					accessor: 'action.bonus_type',
+					Cell: (cell) => cell.original ? <div>{CONFIG.CREW_SHIP_BATTLE_BONUS_TYPE[cell.original.action.bonus_type]}</div> : <span />
+				}),
+				numberCell({
+					id: 'bonus_amount',
+					Header: 'Bonus',
+					accessor: 'action.bonus_amount',
+					Cell: (cell) => cell.original ? <div>{cell.original.action.bonus_amount}</div> : <span />
+				}),
+				numberCell({
+					id: 'duration',
+					Header: 'Duration',
+					accessor: 'action.duration',
+					Cell: (cell) => cell.original ? <div>{cell.original.action.duration + 's'}</div> : <span />
+				}),
+				numberCell({
+					id: 'cooldown',
+					Header: 'Cooldown',
+					accessor: 'action.cooldown',
+					Cell: (cell) => cell.original ? <div>{cell.original.action.cooldown + 's'}</div> : <span />
+				}),
+				numberCell({
+					id: 'initial_cooldown',
+					Header: 'Initialization',
+					accessor: 'action.initial_cooldown',
+					Cell: (cell) => cell.original ? <div>{cell.original.action.initial_cooldown + 's'}</div> : <span />
+				}),
+				{
+					id: 'ability',
+					Header: 'Ability',
+					minWidth: 140,
+					isResizable: true,
+					accessor: 'action.ability',
+					Cell: (cell) => cell.original && cell.original.action.ability ? <div>{CONFIG.CREW_SHIP_BATTLE_ABILITY_TYPE[cell.original.action.ability.type].replace('%VAL%', cell.original.action.ability.amount)}</div> : <span />,
+					aggregate: vals => 0,
+					Aggregated: row => <span />
+				}
+			);
+		}
+
+
+			// eqTable}
+			// 	<h4 className="ui header">Ship abilitiy '{item.action.name}'</h4>
+			// 	<Label>Accuracy +{item.ship_battle.accuracy}  Crit Bonus +{item.ship_battle.crit_bonus}  {item.ship_battle.crit_chance && <span>Crit Rating +{item.ship_battle.crit_chance}  </span>}Evasion +{item.ship_battle.evasion}</Label>
+			// 	<Label>Increase {CONFIG.CREW_SHIP_BATTLE_BONUS_TYPE[item.action.bonus_type]} by {item.action.bonus_amount}</Label>
+			// 	{item.action.penalty && <Label>Decrease {CONFIG.CREW_SHIP_BATTLE_BONUS_TYPE[item.action.penalty.type]} by {item.action.penalty.amount}</Label>}
+
+			// 	{item.action.ability && <Label>Ability: {CONFIG.CREW_SHIP_BATTLE_ABILITY_TYPE[item.action.ability.type].replace('%VAL%', item.action.ability.amount)} {(item.action.ability.condition > 0) && <span>Trigger: {CONFIG.CREW_SHIP_BATTLE_TRIGGER[item.action.ability.condition]}</span>}</Label>}
+			// 	<Label>Duration: {item.action.duration}s  Cooldown: {item.action.cooldown}s  Initial Cooldown: {item.action.initial_cooldown}s  </Label>
+			// 	{item.action.limit && <Label>Limit: {item.action.limit} uses per battle</Label>}
+
+			// 	{this.renderChargePhases(item.action.charge_phases)}
 
 		return _columns;
 	}
