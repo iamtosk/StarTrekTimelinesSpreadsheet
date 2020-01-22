@@ -500,7 +500,7 @@ export class AppHome extends React.Component {
 	}
 
 	_onDataError(reason) {
-		this.setState({ errorMessage: reason, hideErrorDialog: false });
+		this.setState({ errorMessage: reason, hideErrorDialog: false, showSpinner: false, showLoginDialog: true });
 	}
 
 	async _onDataFinished() {
