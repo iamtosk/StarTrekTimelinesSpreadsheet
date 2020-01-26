@@ -6,6 +6,7 @@ import { Checkbox } from 'office-ui-fabric-react/lib/Checkbox';
 import { MessageBar, MessageBarType } from 'office-ui-fabric-react/lib/MessageBar';
 import { Pivot, PivotItem } from 'office-ui-fabric-react/lib/Pivot';
 import { Image } from 'office-ui-fabric-react/lib/Image';
+import { openDevTools } from '../utils/pal';
 
 import STTApi from 'sttapi';
 
@@ -93,6 +94,10 @@ export class LoginDialog extends React.Component {
 					<div className="ui medium centered text active inline loader">Logging in...</div>
 				}
 			</DialogFooter>
+
+			<button className='ui icon button' onClick={() => openDevTools()}>
+				<i className='icon bug' />
+			</button>
 		</Dialog>;
 	}
 
