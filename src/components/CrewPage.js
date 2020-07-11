@@ -1,5 +1,6 @@
 import React from 'react';
 import { SearchBox } from 'office-ui-fabric-react/lib/SearchBox';
+import { DefaultButton } from 'office-ui-fabric-react/lib/Button';
 
 import { CrewList } from './CrewList.js';
 import { ShareDialog } from './ShareDialog.js';
